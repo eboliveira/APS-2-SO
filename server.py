@@ -50,6 +50,7 @@ class server(object):
 
     def send_file(self, mes):
         dire = mes[3] + '/' + mes[2]        #concatena diretório com o arquivo
+        time.sleep(0.1)                     #evita o bug de ler o tamanho do arquivo como 0
         tam = os.path.getsize(dire)         #vejo o tamanho do arquivo
         self.server.sendall(str(tam))       #envio pro cliente o tamanho do arquivo que vou enviar
         f = open(dire, 'rb')                #abro o arquivo para leitura
