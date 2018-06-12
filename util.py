@@ -47,6 +47,9 @@ def create_folder(path, foldername):    #cria uma pasta
 
 def create_file(path, filename):        #cria um arquivo
     dire = position(path)
+    if not os.path.exists(dire):
+        command = "mkdir " + dire
+        os.system(command)
     dire += filename
     if not os.path.isfile(dire):        #se o arquivo não existir
         f = open(dire,'wb')
