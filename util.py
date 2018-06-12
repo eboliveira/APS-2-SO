@@ -75,7 +75,7 @@ def modify_file(path, filename, conn):  #protocolo para receber um arquivo
         tam_act = len(f)                #tamanho atual é o tamanho da partição do arquivo que foi recebida
         f_act.write(f)                  #escrevendo no nosso arquivo
         tam -= tam_act                  #decrementamos o restante
-    conn.sendall("ok")                  #enviamos um ok para o server
+    conn.sendall("ack")                 #enviamos um ack para o server
 
 
 

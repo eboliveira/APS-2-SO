@@ -14,7 +14,7 @@ class client (object):
             os.mkdir(dire)                  #
         os.chdir(dire)                      #
         self.s = socket.socket()            #Cria o socket
-        self.s.bind((host,port))            #Define que ele vai quem vai escutar
+        self.s.bind((host,int(port)))       #Define que ele vai quem vai escutar
         self.s.listen(1)                    #escuta
         self.conn, self.addr = self.s.accept()  #aceita e estabelece conexão
         self.receive()                      #chama a função de receber

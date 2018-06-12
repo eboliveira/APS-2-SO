@@ -25,17 +25,17 @@ class server(object):
         dire += "/BkpSync"    #concatena com o nome da pasta
         os.chdir(dire)        #Muda o diretorio do nosso programa para a pasta do BkpSync
         self.server = socket.socket()   #inicia um socket
-        while self.flag == 0:
-            th = threading.Thread(target=self.conectar, args=(host, port))
+        while self.flag == 0:           #fica tentando conectar de 2 em 2 segs
+            th = threading.Thread(target=self.conectar, args=(host, int(port))) #cria uma thread, pois a falha na conexão mata o processo
             th.daemon = True
             th.start()                          
-            time.sleep(1)
+            time.sleep(2)
         print "connected"
         self.send()                         #chama a funcao de mandar mensagem
 
-    def conectar(self,host,port):
-        self.server.connect((host,port))
-        self.flag = 1
+    def conectar(self,host,port):   #conecta
+        self.server.connect((host,port))    #a thread sempre morre aqui, caso não consiga a conexão
+        self.flag = 1                       #se chegou aqui, quer dizer que a thread conectou
         
     
     def send(self):
