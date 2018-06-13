@@ -33,8 +33,7 @@ class client (object):
             mes = util.decode_message(mes)  #decodifica a mensagem do servidor
             print mes
             self.conn.sendall("receive")    #avisa o servidor que recebeu a mensagem
-            if mes:
-                self.decode(mes)                #chama a função que define qual o destino à ser tomado
+            self.decode(mes)                #chama a função que define qual o destino à ser tomado
 
 
     def decode(self, message):

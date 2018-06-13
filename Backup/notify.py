@@ -47,8 +47,6 @@ def monitorar(eventos, dire):
     last_event = []     #armazena o ultimo evento ocorrido
     modifies = []       #armezena as modificações repetidas
     time1 = 0           #será usado futuramente
-    eventos_send = []   #eventos que ocorreram durante o send
-    trigger = {}        #evento gatilho que começou a transferir arquivos
     for event in i.event_gen():
         time2 = time.clock()    #pega o tempo de execução atual
         if (time2 - time1) > 3:  #verifica se o time2 e o time1 tem 3 segundos de diferença
@@ -60,21 +58,11 @@ def monitorar(eventos, dire):
             event = {'header' : header, 'type_name' : type_names, 'patch' : watch_path, 'filename' : filename}
             if header.mask in eventos_mask:     #verifico se a mascara do evento nos interessa (as que nos interessa está em eventos_mask)
                 if not BkpSync.flag_send:
-                    if len(eventos_send):
-                        for i in eventos_send:
-                            if trigger:
-                                if i['filename'] != trigger['filename']:
-                                    eventos.append(eventos_send.pop())
-                        
                     if event != last_event:         #verifico se não é um evento repitido
                             eventos.append(event)           #colocamos na lista que foi passada por paramêtro
                     else:
                         time1 = time.clock()        #se for repetido, armazeno o tempo
                         modifies.append(event)      #coloco no vetor de modificacao
-                else:
-                    if len(eventos_send) == 0:
-                        trigger = last_event
-                    eventos_send.append(event)
                 last_event = event              #atualizo o ultimo evento
 
 

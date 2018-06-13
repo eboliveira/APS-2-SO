@@ -68,6 +68,7 @@ class server(object):
         BkpSync.flag_send = 1
         time.sleep(1)
         dire = mes[3] + '/' + mes[2]        #concatena diretorio com o arquivo
+        time.sleep(0.1)                     #evita o bug de ler o tamanho do arquivo como 0
         tam = os.path.getsize(dire)         #vejo o tamanho do arquivo
         self.server.sendall(str(tam))       #envio pro cliente o tamanho do arquivo que vou enviar
         f = open(dire, 'rb')                #abro o arquivo para leitura
@@ -80,5 +81,6 @@ class server(object):
                 tam -= tam                  #
             self.server.send(content)       #
         f.close()                           #fecho o arquivo
-        print self.server.recv(1024)        #printo a resposta do cliente (deve ser um ack)
+        print self.server.recv(1024)        #printo a resposta do cliente (deve ser um ok)
+        time.sleep(1)
         BkpSync.flag_send = 0
