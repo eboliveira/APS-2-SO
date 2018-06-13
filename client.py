@@ -51,7 +51,7 @@ class client (object):
             util.delete_file(path,filename)
         elif mask == notify.MODIFY_FILE:
             BkpSync.flag_send = 1
-            time.sleep(1)
+            time.sleep(0.5)
             util.modify_file(path, filename, self.conn)
             time.sleep(1)
             BkpSync.flag_send = 0
@@ -63,7 +63,7 @@ class client (object):
             util.delete_file(path,filename)
         elif mask == notify.FILE_MOVE_TO:
             BkpSync.flag_send = 1
-            time.sleep(1)
+            time.sleep(0.5)
             util.modify_file(path, filename, self.conn)
             time.sleep(1)
             BkpSync.flag_send = 0

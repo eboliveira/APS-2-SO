@@ -67,18 +67,19 @@ class server(object):
     def send_file(self, mes):
         BkpSync.flag_send = 1
         time.sleep(1)
-        dire = mes[3] + '/' + mes[2]        #concatena diretorio com o arquivo
-        tam = os.path.getsize(dire)         #vejo o tamanho do arquivo
-        self.server.sendall(str(tam))       #envio pro cliente o tamanho do arquivo que vou enviar
-        f = open(dire, 'rb')                #abro o arquivo para leitura
-        while tam > 0:                      #enquanto tiver arquivo para enviar
-            if tam > 1024:                  #
-                content = f.read(1024)      #
-                tam-=1024                   #
-            else:                           #envio o arquivo particionado
-                content = f.read(tam)       #
-                tam -= tam                  #
-            self.server.send(content)       #
-        f.close()                           #fecho o arquivo
-        print self.server.recv(1024)        #printo a resposta do cliente (deve ser um ack)
+        dire = mes[3] + '/' + mes[2]            #concatena diretorio com o arquivo
+        if os.path.exists(dire):
+            tam = os.path.getsize(dire)         #vejo o tamanho do arquivo
+            self.server.sendall(str(tam))       #envio pro cliente o tamanho do arquivo que vou enviar
+            f = open(dire, 'rb')                #abro o arquivo para leitura
+            while tam > 0:                      #enquanto tiver arquivo para enviar
+                if tam > 1024:                  #
+                    content = f.read(1024)      #
+                    tam-=1024                   #
+                else:                           #envio o arquivo particionado
+                    content = f.read(tam)       #
+                    tam -= tam                  #
+                self.server.send(content)       #
+            f.close()                           #fecho o arquivo
+            print self.server.recv(1024)        #printo a resposta do cliente (deve ser um ack)
         BkpSync.flag_send = 0
