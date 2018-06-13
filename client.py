@@ -5,11 +5,19 @@ import util
 import os
 import sys
 import threading
+import time
+import BkpSync
 
 class client (object):
 
-    def __init__(self, dire = os.getcwd(), host = socket.gethostname(), port = 50007):
-        dire += '/BkpSync'                  #
+    def __init__(self, dire, host, port):
+        if not dire:
+            dire = os.getcwd()
+        if not host:
+            host = socket.gethostname()
+        if not port:
+            port = 50007
+        dire += '/BkpSync'
         if not os.path.exists(dire):        #Altera o diretório para a pasta BkpSync, se não tiver, cria esta pasta
             os.mkdir(dire)                  #
         os.chdir(dire)                      #
@@ -41,7 +49,11 @@ class client (object):
         elif mask == notify.DELETE_FILE:
             util.delete_file(path,filename)
         elif mask == notify.MODIFY_FILE:
+            BkpSync.flag_send = 1
+            time.sleep(1)
             util.modify_file(path, filename, self.conn)
+            time.sleep(1)
+            BkpSync.flag_send = 0
         elif mask == notify.DIR_MOVED_FROM:
             util.delete_folder(path,filename)
         elif mask == notify.DIR_MOVED_TO:
@@ -49,17 +61,9 @@ class client (object):
         elif mask == notify.FILE_MOVED_FROM:
             util.delete_file(path,filename)
         elif mask == notify.FILE_MOVE_TO:
+            BkpSync.flag_send = 1
+            time.sleep(1)
             util.modify_file(path, filename, self.conn)
+            time.sleep(1)
+            BkpSync.flag_send = 0
         
-
-
-if __name__ == "__main__":
-    #<Diretorio> <hostname> <porta>
-    if len(sys.argv) == 1:  #se passar somente um argumento, ou seja, só o python server.py, chama o construtor sem nada
-        c = client()      
-    elif len(sys.argv) == 2:     #se passar somente um argumento além do arquivo, deve ser o diretório
-        c = client(sys.argv[1])
-    elif len(sys.argv) == 3:    #se passar dois argumentos além do arquivo, deve ser o diretório e o hostname
-        c = client(sys.argv[1], sys.argv[2])
-    elif len(sys.argv) == 4:    #se passar três argumentos além do arquivo, deve ser o diretório, o hostname e a porta
-        c = client(sys.argv[1], sys.argv[2], sys.argv[3])

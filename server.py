@@ -6,6 +6,7 @@ import sys
 import util
 import os
 import time
+import BkpSync
 
 class server(object):
 
@@ -13,7 +14,13 @@ class server(object):
     No construtor da classe, definimos que diretorio padrao e o atual, o host padrao e o que retorna da
     funcao socket.gethostname() e a porta padrao e a 50007 que e uma porta nao usada
     '''
-    def __init__(self,dire = os.getcwd(), host = socket.gethostname(), port = 50007):
+    def __init__(self,dire, host, port):
+        if not dire:
+            dire = os.getcwd()
+        if not host:
+            host = socket.gethostname()
+        if not port:
+            port = 50007
         self.eventos = []       #inicia um vetor que vai armazer todos os eventos
         self.flag = 0           #flag para verificar se está conectado
         th = threading.Thread(target=notify.monitorar, args=(self.eventos,dire))    #inicia uma thread para monitorar e passa
@@ -22,7 +29,6 @@ class server(object):
         th.start()            #inicia a thread
         time.sleep(1)         #espera a pasta ser criada na thread de monitorar
         dire = os.getcwd()    #pega o diretorio atual
-        dire += "/BkpSync"    #concatena com o nome da pasta
         os.chdir(dire)        #Muda o diretorio do nosso programa para a pasta do BkpSync
         self.server = socket.socket()   #inicia um socket
         while self.flag == 0:           #fica tentando conectar de 2 em 2 segs
@@ -59,6 +65,8 @@ class server(object):
 
 
     def send_file(self, mes):
+        BkpSync.flag_send = 1
+        time.sleep(1)
         dire = mes[3] + '/' + mes[2]        #concatena diretorio com o arquivo
         time.sleep(0.1)                     #evita o bug de ler o tamanho do arquivo como 0
         tam = os.path.getsize(dire)         #vejo o tamanho do arquivo
@@ -74,15 +82,5 @@ class server(object):
             self.server.send(content)       #
         f.close()                           #fecho o arquivo
         print self.server.recv(1024)        #printo a resposta do cliente (deve ser um ok)
-                
-if __name__ == "__main__":
-
-    #<Diretorio> <hostname> <porta>
-    if len(sys.argv) == 1:      #se passar somente um argumento, ou seja, so o python server.py, chama o construtor sem nada
-        s = server()      
-    elif len(sys.argv) == 2:    #se passar somente um argumento alem do arquivo, deve ser o diretorio
-        s = server(sys.argv[1])
-    elif len(sys.argv) == 3:    #se passar dois argumentos alem do arquivo, deve ser o diretorio e o hostname
-        s = server(sys.argv[1], sys.argv[2])
-    elif len(sys.argv) == 4:    #se passar três argumentos alem do arquivo, deve ser o diretorio, o hostname e a porta
-        s = server(sys.argv[1], sys.argv[2], sys.argv[3])
+        time.sleep(1)
+        BkpSync.flag_send = 0

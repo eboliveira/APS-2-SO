@@ -2,7 +2,7 @@
 import os
 import logging
 import time
-
+import BkpSync
 import inotify.adapters
 
 #Defines das flags que nos interessa
@@ -35,7 +35,6 @@ def _configure_logging():
 
 def monitorar(eventos, dire):
     _configure_logging()
-    dire += "/BkpSync"
     if os.path.exists(dire):
         print("BkpSync dire exists.")
     else:
@@ -58,11 +57,12 @@ def monitorar(eventos, dire):
             (header, type_names, watch_path, filename) = event
             event = {'header' : header, 'type_name' : type_names, 'patch' : watch_path, 'filename' : filename}
             if header.mask in eventos_mask:     #verifico se a mascara do evento nos interessa (as que nos interessa está em eventos_mask)
-                if event != last_event:         #verifico se não é um evento repitido
-                    eventos.append(event)           #colocamos na lista que foi passada por paramêtro
-                else:
-                    time1 = time.clock()        #se for repetido, armazeno o tempo
-                    modifies.append(event)      #coloco no vetor de modificacao
+                if not BkpSync.flag_send:
+                    if event != last_event:         #verifico se não é um evento repitido
+                            eventos.append(event)           #colocamos na lista que foi passada por paramêtro
+                    else:
+                        time1 = time.clock()        #se for repetido, armazeno o tempo
+                        modifies.append(event)      #coloco no vetor de modificacao
                 last_event = event              #atualizo o ultimo evento
 
 

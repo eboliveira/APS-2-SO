@@ -81,5 +81,41 @@ def modify_file(path, filename, conn):  #protocolo para receber um arquivo
     conn.sendall("ack")                 #enviamos um ack para o server
 
 
+def format_config(ip, dire, port):
+    i = 0
+    ip = ip.replace(' ','')
+    dire = dire.replace(' ','')
+    port = port.replace(' ','')
+    ip = ip.strip('\n')
+    dire = dire.strip('\n')
+    port = port.strip('\n')
+    while ip[i] != '=':
+        i+=1
+    i+=1
+    ip = ip[i:]
+    i = 0
+    while dire[i] != '=':
+        i+=1
+    i+=1
+    dire = dire[i:]
+    i = 0
+    while port[i] != '=':
+        i+=1
+    i+=1
+    port = port[i:]
+    return ip,dire,port
+
+def read_file(f):
+    f.readline()
+    ip_cliente = f.readline()
+    dire_client = f.readline()
+    port_client = f.readline()
+    f.readline()
+    ip_servidor = f.readline()
+    dire_servidor = f.readline()
+    port_servidor = f.readline()
+    return ip_cliente, dire_client, port_client, ip_servidor, dire_servidor, port_servidor
+
+
 
 
